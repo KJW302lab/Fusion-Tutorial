@@ -1,18 +1,24 @@
 using Fusion;
+using UnityEngine;
 
-public class Player : NetworkBehaviour
+namespace Tutorial_102
 {
-    // 플레이어 프리팹이 가진 플레이어 컨트롤러입니다.
-    private NetworkCharacterControllerPrototype _cc;
-
-    private void Awake()
+    public class Player : NetworkBehaviour
     {
-        _cc = GetComponent<NetworkCharacterControllerPrototype>();
-    }
+        private NetworkCharacterControllerPrototype _cc;
 
-    public override void FixedUpdateNetwork()
-    {
-        if (GetInput(out NetworkInputData data))
-            _cc.Move(5 * data.Direction.normalized * Runner.DeltaTime);
+        private void Awake()
+        {
+            _cc = GetComponent<NetworkCharacterControllerPrototype>();
+        }
+
+        public override void FixedUpdateNetwork()
+        {
+            if (GetInput(out NetworkInputData data))
+            {
+                data.Direction.Normalize();
+                _cc.Move(5 * data.Direction*Runner.DeltaTime);
+            }
+        }
     }
 }

@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
+using Tutorial_102;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Tutorial_102
+namespace Tutorial_103
 {
-    public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
-    {
-        private NetworkRunner _runner;
+	public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
+	{
+		private NetworkRunner _runner;
 
 		private void OnGUI()
 		{
@@ -72,6 +73,13 @@ namespace Tutorial_102
 			}
 		}
 
+
+		private bool _mouseButton0;
+		private void Update()
+		{
+			_mouseButton0 = _mouseButton0 | Input.GetMouseButton(0);
+		}
+
 		// Fusion은 정확한 동기화와 입력 정보를 관리하기 위해 NetworkInput을 이용합니다.
 		public void OnInput(NetworkRunner runner, NetworkInput input)
 		{
@@ -90,6 +98,12 @@ namespace Tutorial_102
 		
 			if (Input.GetKey(KeyCode.D))
 				data.Direction += Vector3.right;
+
+			// _mouseButton0이 true일 경우, data.Buttons에 NetworkInputData.MOUSE_BUTTON1 값을 추가합니다.
+			if (_mouseButton0)
+				data.Buttons |= NetworkInputData.MOUSE_BUTTON1;
+
+			_mouseButton0 = false;
 		
 			input.Set(data);
 		}
